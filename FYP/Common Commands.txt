@@ -1,0 +1,6 @@
+pip download yapf -d yapf_offline
+
+
+kaggle()  
+!pip install /kaggle/working/yapf-offline-zip/yapf_offline/*
+
