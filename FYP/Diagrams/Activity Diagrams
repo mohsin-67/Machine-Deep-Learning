@@ -1,0 +1,29 @@
+@startuml
+start
+
+:Capture video feed from city cameras;
+:Preprocess the video frames;
+:Run YOLO v11 model on edge device;
+if (Suspicious activity detected?) then (yes)
+    :Send alert to the authorities;
+    :Highlight suspicious activity in video feed;
+else (no)
+    :Continue monitoring;
+endif
+
+if (Search for specific individual?) then (yes)
+    :Upload individual's image to the system;
+    :Run image matching against detected individuals;
+    if (Match found?) then (yes)
+        :Mark individual in the video feed;
+        :Send location updates to authorities;
+    else (no)
+        :Log unsuccessful search;
+    endif
+else (no)
+    :Regular tracking mode;
+endif
+
+:Store activity logs in the database;
+stop
+@enduml
