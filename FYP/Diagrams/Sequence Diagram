@@ -1,0 +1,22 @@
+@startuml
+actor Police
+entity "City Cameras" as Cameras
+entity "Edge Device (e.g., Jetson)" as EdgeDevice
+entity "YOLO AI Model" as YOLOModel
+entity "Database" as Database
+
+Police -> Cameras : Request to detect suspicious activity
+Cameras -> EdgeDevice : Send video stream or image data
+EdgeDevice -> YOLOModel : Process image data
+YOLOModel -> YOLOModel : Perform detection (e.g., person detection)
+YOLOModel -> EdgeDevice : Return detection results (coordinates, IDs)
+EdgeDevice -> Database : Log detection (time, person ID, location)
+EdgeDevice -> Police : Alert with person ID and location
+
+Police -> Database : Query for specific person (via uploaded image)
+Database -> EdgeDevice : Retrieve detection history
+EdgeDevice -> YOLOModel : Locate person in video stream
+YOLOModel -> EdgeDevice : Return result
+EdgeDevice -> Police : Show real-time location
+
+@enduml
