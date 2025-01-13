@@ -1,0 +1,54 @@
+@startuml
+
+' Entities as classes
+class Police {
+  +id: Integer
+  +name: String
+  +rank: String
+  +contact: String
+}
+
+class Suspect {
+  +id: Integer
+  +name: String
+  +dob: Date
+  +image: String
+  +lastSeenLocation: String
+}
+
+class Image {
+  +id: Integer
+  +imagePath: String
+  +timestamp: Date
+  +location: String
+}
+
+class CityCamera {
+  +cameraID: Integer
+  +location: String
+  +status: String
+}
+
+class TrackingLog {
+  +logID: Integer
+  +suspectID: Integer
+  +cameraID: Integer
+  +timestamp: Date
+  +status: String
+}
+
+class AIModel {
+  +modelID: Integer
+  +modelName: String
+  +version: String
+  +accuracy: Float
+}
+
+' Relationships
+Police "1" -- "0..*" TrackingLog : "records"
+Suspect "1" -- "0..*" TrackingLog : "tracked through"
+CityCamera "1" -- "0..*" TrackingLog : "records activity"
+TrackingLog "0..*" -- "1" AIModel : "processed by"
+
+@enduml
+
