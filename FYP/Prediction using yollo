@@ -1,0 +1,43 @@
+
+from ultralytics import YOLO
+import requests
+from PIL import Image
+from io import BytesIO
+import matplotlib.pyplot as plt
+
+def display_image_with_yolov11(image_url):
+    """
+    Displays an image from a URL with YOLOv11 object detection, showing bounding boxes and labels.
+    """
+    try:
+        # Fetch the image from the URL
+        response = requests.get(image_url, stream=True)
+        response.raise_for_status()  # Ensure the request was successful
+
+        # Open the image
+        image = Image.open(BytesIO(response.content))
+
+        # Load the YOLOv11 model
+        model = YOLO('yolo11m.pt')  # Specify the model file path
+
+        # Perform inference on the image
+        results = model(image)
+
+        # Extract the annotated image with bounding boxes
+        annotated_image = results[0].plot()
+
+        # Display the annotated image
+        plt.figure(figsize=(10, 10))
+        plt.imshow(annotated_image)
+        plt.axis('off')
+        plt.title("YOLOv11 Object Detection")
+        plt.show()
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading the image: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage
+image_url = "https://www.gofundme.com/c/wp-content/uploads/2016/09/iStock-868923404-scaled-1.jpg?w=1920"  # Prompt the user to enter the image URL
+display_image_with_yolov11(image_url)
