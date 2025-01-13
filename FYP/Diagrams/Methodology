@@ -1,0 +1,39 @@
+@startuml
+actor "Police Officer" as Officer
+actor "City Camera" as Camera
+actor "AI Model (YOLO v11)" as AI
+
+rectangle "Criminal Detection System" {
+  usecase "Detect Suspicious Activity" as UC1
+  usecase "Track Individuals" as UC2
+  usecase "Upload Image to Locate Individual" as UC3
+  usecase "Monitor Marked Individuals" as UC4
+  usecase "Alert Authorities" as UC5
+}
+
+Officer -- UC1
+Officer -- UC3
+Officer -- UC5
+Camera -- UC1
+Camera -- UC4
+AI -- UC1
+AI -- UC2
+AI -- UC4
+
+package "Raspberry Pi / Edge Device" {
+  component "Camera Interface" as CI
+  component "AI Processing Module" as AI_Module
+}
+
+CI -- Camera
+AI_Module -- AI
+
+package "Database / Tracking System" {
+  component "Criminal Database" as DB
+  component "Tracking Log" as Log
+}
+
+Officer -- DB : "Accesses"
+Officer -- Log : "Logs data"
+
+@enduml
