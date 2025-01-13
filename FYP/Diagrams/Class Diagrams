@@ -1,0 +1,62 @@
+@startuml
+
+' Abstract Classes
+abstract class "EdgeDevice" {
+  +id: int
+  +deviceType: string
+  +processImage(): void
+}
+
+abstract class "DetectionSystem" {
+  +detectSuspiciousActivity(): bool
+  +trackPerson(): void
+}
+
+' Main Classes
+class "Camera" {
+  +cameraId: int
+  +location: string
+  +getVideoFeed(): video
+}
+
+class "Person" {
+  +personId: int
+  +name: string
+  +image: image
+  +location: string
+  +isSuspicious: bool
+}
+
+class "Police" {
+  +policeId: int
+  +name: string
+  +issueAlert(): void
+  +uploadImage(image: image): bool
+}
+
+class "TrackingSystem" {
+  +trackIndividual(personId: int): void
+  +getTrackingInfo(personId: int): string
+}
+
+class "AIModel" {
+  +modelName: string
+  +detectObjects(image: image): list
+  +trainModel(dataset: dataset): void
+}
+
+' Relationships
+EdgeDevice <|-- "RaspberryPi"
+EdgeDevice <|-- "NVIDIAJetson"
+
+DetectionSystem <|-- "YOLOv11"
+DetectionSystem <|-- "SuspiciousActivityDetector"
+
+"Camera" --> "EdgeDevice": feeds to
+"Police" --> "Camera": uploads images for
+"Person" --> "TrackingSystem": tracked by
+"AIModel" --> "DetectionSystem": uses
+"AIModel" --> "Camera": processes video feed
+
+@enduml
+
