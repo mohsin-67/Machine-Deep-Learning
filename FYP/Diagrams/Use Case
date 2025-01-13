@@ -1,0 +1,31 @@
+@startuml
+actor PoliceOfficer
+actor SystemAdmin
+actor Suspect
+actor Camera
+
+usecase "Detect Suspicious Activity" as UC1
+usecase "Track Individuals" as UC2
+usecase "Upload Image for Search" as UC3
+usecase "Monitor Suspicious Individuals" as UC4
+usecase "Alert Authorities" as UC5
+usecase "View Real-time Video Feed" as UC6
+usecase "Manage System Settings" as UC7
+
+PoliceOfficer --> UC1
+PoliceOfficer --> UC2
+PoliceOfficer --> UC3
+PoliceOfficer --> UC4
+PoliceOfficer --> UC5
+
+SystemAdmin --> UC7
+SystemAdmin --> UC6
+
+Camera --> UC1
+Camera --> UC2
+Camera --> UC4
+
+UC1 .down.> UC2 : <<include>>
+UC3 .down.> UC4 : <<include>>
+
+@enduml
