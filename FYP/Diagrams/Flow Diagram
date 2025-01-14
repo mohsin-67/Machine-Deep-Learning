@@ -1,0 +1,64 @@
+@startuml
+actor "City Camera Network" as Camera
+participant "Edge Device" as edge_device <<stereotype>>
+participant "AI Model" as ai_model
+participant "Control Center" as control_center
+participant "Database" as database
+
+' Sequence of interactions with lifelines for each method
+Camera -> edge_device : Stream Video()
+edge_device -> edge_device : Capture Video Stream()
+activate edge_device
+edge_device -> edge_device : Process Frames()
+activate edge_device
+edge_device -> ai_model : Run AI Model()
+activate ai_model
+ai_model --> edge_device : Return Detection Results
+deactivate ai_model
+edge_device -> control_center : Send Alerts()
+deactivate edge_device
+
+activate control_center
+control_center -> database : Store Data()
+activate database
+database --> control_center : Data Stored
+deactivate database
+control_center -> "Police" : Notify Suspicious Activity()
+deactivate control_center
+
+' Define primary components for the FYP
+actor Police
+actor "City Cameras" as Cameras
+participant "Edge Device (Raspberry Pi/Jetson)" as EdgeDevice
+participant "YOLO v11 Model" as YOLOModel
+database "Database" as Database
+participant "Alert System" as AlertSystem
+
+' Lifelines
+Police -[#black]-> Police : Lifeline starts
+Cameras -[#black]-> Cameras : Lifeline starts
+EdgeDevice -[#black]-> EdgeDevice : Lifeline starts
+YOLOModel -[#black]-> YOLOModel : Lifeline starts
+Database -[#black]-> Database : Lifeline starts
+AlertSystem -[#black]-> AlertSystem : Lifeline starts
+
+' Flow of interactions
+Police -> EdgeDevice : Upload criminal image for tracking
+EdgeDevice -> YOLOModel : Process image with detection model
+YOLOModel --> EdgeDevice : Detection results
+EdgeDevice -> Cameras : Connect to city cameras
+Cameras --> EdgeDevice : Live camera feed
+EdgeDevice -> YOLOModel : Detect and identify criminals in real time
+YOLOModel --> EdgeDevice : Detection and tracking updates
+EdgeDevice -> Database : Store results and logs
+EdgeDevice -> AlertSystem : Notify police of suspicious activities
+AlertSystem --> Police : Send notifications
+
+' End lifelines
+Police -[#red]-> Police : Lifeline ends
+Cameras -[#red]-> Cameras : Lifeline ends
+EdgeDevice -[#red]-> EdgeDevice : Lifeline ends
+YOLOModel -[#red]-> YOLOModel : Lifeline ends
+Database -[#red]-> Database : Lifeline ends
+AlertSystem -[#red]-> AlertSystem : Lifeline ends
+@enduml
