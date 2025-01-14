@@ -1,62 +1,43 @@
 @startuml
-
-' Abstract Classes
-abstract class "EdgeDevice" {
-  +id: int
-  +deviceType: string
-  +processImage(): void
+' Defining classes for the system
+class "CriminalDetectionSystem" {
+    +detectActivity(): void
+    +trackIndividual(id: int): void
+    +uploadImage(image: File): void
 }
 
-abstract class "DetectionSystem" {
-  +detectSuspiciousActivity(): bool
-  +trackPerson(): void
-}
-
-' Main Classes
 class "Camera" {
-  +cameraId: int
-  +location: string
-  +getVideoFeed(): video
+    +captureVideo(): Video
+    +sendVideoToEdgeDevice(video: Video): void
 }
 
-class "Person" {
-  +personId: int
-  +name: string
-  +image: image
-  +location: string
-  +isSuspicious: bool
-}
-
-class "Police" {
-  +policeId: int
-  +name: string
-  +issueAlert(): void
-  +uploadImage(image: image): bool
-}
-
-class "TrackingSystem" {
-  +trackIndividual(personId: int): void
-  +getTrackingInfo(personId: int): string
+class "EdgeDevice" {
+    +processVideo(video: Video): DetectionData
+    +runAIModel(model: AIModel): DetectionData
 }
 
 class "AIModel" {
-  +modelName: string
-  +detectObjects(image: image): list
-  +trainModel(dataset: dataset): void
+    +loadModel(path: String): void
+    +detectObjects(video: Video): DetectionData
+    +trackObjects(detectionData: DetectionData): void
 }
 
-' Relationships
-EdgeDevice <|-- "RaspberryPi"
-EdgeDevice <|-- "NVIDIAJetson"
+class "PoliceDatabase" {
+    +storeDetectionData(data: DetectionData): void
+    +searchSuspect(image: File): SuspectData
+}
 
-DetectionSystem <|-- "YOLOv11"
-DetectionSystem <|-- "SuspiciousActivityDetector"
+class "UI/Controller" {
+    +displayDetectedData(data: DetectionData): void
+    +alertPolice(data: SuspectData): void
+}
 
-"Camera" --> "EdgeDevice": feeds to
-"Police" --> "Camera": uploads images for
-"Person" --> "TrackingSystem": tracked by
-"AIModel" --> "DetectionSystem": uses
-"AIModel" --> "Camera": processes video feed
+' Relationships between classes
+"Camera" --> "EdgeDevice" : Sends video
+"EdgeDevice" --> "AIModel" : Runs model
+"AIModel" --> "CriminalDetectionSystem" : Provides detection data
+"CriminalDetectionSystem" --> "PoliceDatabase" : Stores data
+"PoliceDatabase" --> "UI/Controller" : Sends suspect data
+"UI/Controller" ..> "PoliceDatabase" : Queries suspect
 
 @enduml
-
