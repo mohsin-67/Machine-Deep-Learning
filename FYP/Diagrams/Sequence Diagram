@@ -1,22 +1,30 @@
 @startuml
-actor Police
-entity "City Cameras" as Cameras
-entity "Edge Device (e.g., Jetson)" as EdgeDevice
-entity "YOLO AI Model" as YOLOModel
-entity "Database" as Database
+actor Police as P
+participant "City Camera" as Camera
+participant "Edge Device" as Device
+participant "YOLO Model" as YOLO
+participant "Database" as DB
+participant "Notification System" as Notify
 
-Police -> Cameras : Request to detect suspicious activity
-Cameras -> EdgeDevice : Send video stream or image data
-EdgeDevice -> YOLOModel : Process image data
-YOLOModel -> YOLOModel : Perform detection (e.g., person detection)
-YOLOModel -> EdgeDevice : Return detection results (coordinates, IDs)
-EdgeDevice -> Database : Log detection (time, person ID, location)
-EdgeDevice -> Police : Alert with person ID and location
+P -> Camera: Provide live camera feed
+Camera -> Device: Stream video frames
+Device -> YOLO: Process frames for suspicious activity
+YOLO --> Device: Detection results
+alt Suspicious activity detected
+    Device -> DB: Log detected activity
+    Device -> Notify: Alert authorities
+    Notify --> P: Send alert with details
+end
 
-Police -> Database : Query for specific person (via uploaded image)
-Database -> EdgeDevice : Retrieve detection history
-EdgeDevice -> YOLOModel : Locate person in video stream
-YOLOModel -> EdgeDevice : Return result
-EdgeDevice -> Police : Show real-time location
-
+P -> Device: Upload image for tracking
+Device -> YOLO: Run image matching
+YOLO --> Device: Match results
+alt Match found
+    Device -> DB: Retrieve tracking data
+    DB --> Device: Provide details
+    Device -> Notify: Notify Police
+    Notify --> P: Share suspect location
+else No match found
+    Device -> P: Notify no match found
+end
 @enduml
