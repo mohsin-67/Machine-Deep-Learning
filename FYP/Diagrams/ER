@@ -1,53 +1,56 @@
 @startuml
-
-' Entities as classes
-class Police {
-  +id: Integer
-  +name: String
-  +rank: String
-  +contact: String
+' Define Entities
+entity "Criminal" {
+    + CriminalID: Integer
+    + Name: String
+    + Age: Integer
+    + Gender: String
+    + Photo: Blob
+    + Status: String [Marked/Unmarked]
 }
 
-class Suspect {
-  +id: Integer
-  +name: String
-  +dob: Date
-  +image: String
-  +lastSeenLocation: String
+entity "CameraFeed" {
+    + CameraID: Integer
+    + Location: String
+    + Timestamp: DateTime
+    + VideoStream: Blob
 }
 
-class Image {
-  +id: Integer
-  +imagePath: String
-  +timestamp: Date
-  +location: String
+entity "SuspiciousActivity" {
+    + ActivityID: Integer
+    + Description: String
+    + Timestamp: DateTime
+    + SeverityLevel: String [Low/Medium/High]
 }
 
-class CityCamera {
-  +cameraID: Integer
-  +location: String
-  +status: String
+entity "Officer" {
+    + OfficerID: Integer
+    + Name: String
+    + Rank: String
+    + ContactNumber: String
 }
 
-class TrackingLog {
-  +logID: Integer
-  +suspectID: Integer
-  +cameraID: Integer
-  +timestamp: Date
-  +status: String
+entity "TrackingRecord" {
+    + RecordID: Integer
+    + CriminalID: Integer
+    + CameraID: Integer
+    + Timestamp: DateTime
+    + Location: String
 }
 
-class AIModel {
-  +modelID: Integer
-  +modelName: String
-  +version: String
-  +accuracy: Float
+entity "SystemEdgeDevice" {
+    + DeviceID: Integer
+    + Type: String
+    + Location: String
+    + Status: String [Active/Inactive]
 }
 
-' Relationships
-Police "1" -- "0..*" TrackingLog : "records"
-Suspect "1" -- "0..*" TrackingLog : "tracked through"
-CityCamera "1" -- "0..*" TrackingLog : "records activity"
-TrackingLog "0..*" -- "1" AIModel : "processed by"
+' Define Relationships
+Criminal ||--o{ TrackingRecord : "is tracked in"
+CameraFeed ||--o{ TrackingRecord : "records"
+SystemEdgeDevice ||--o{ CameraFeed : "processes data from"
+SuspiciousActivity ||--o{ Criminal : "is linked to"
+Officer ||--o{ SuspiciousActivity : "reviews and resolves"
+Officer ||--o{ Criminal : "marks or unmarks"
 
 @enduml
