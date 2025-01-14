@@ -1,54 +1,48 @@
 @startuml
+' Define classes and components involved in the system
 
-' Entities as classes
-class Police {
-  +id: Integer
-  +name: String
-  +rank: String
-  +contact: String
+package "Criminal Detection and Tracking System" {
+    class "Edge Device" {
+        +processData()
+        +sendAlerts()
+        +manageCameraFeed()
+    }
+
+    class "Camera Module" {
+        +captureImage()
+        +sendImageToEdge()
+    }
+
+    class "AI Module" <<stereotype>> {
+        +detectActivity()
+        +trackIndividual()
+        +uploadData()
+    }
+
+    class "Police Interface" {
+        +uploadImage()
+        +receiveAlerts()
+    }
+
+    class "Database" {
+        +storeImageData()
+        +storeTrackingInfo()
+    }
+
+    ' Define interactions between components
+    "Edge Device" --> "Camera Module" : manage feed
+    "Edge Device" --> "AI Module" : send captured images
+    "AI Module" --> "Database" : store tracking info
+    "Police Interface" --> "AI Module" : upload image to track
+
+    ' Show relationships between entities
+    entity "Criminal Record" {
+        +criminalID
+        +crimeDetails
+        +imageData
+    }
+
+    "Database" --> "Criminal Record" : stores
 }
-
-class Suspect {
-  +id: Integer
-  +name: String
-  +dob: Date
-  +image: String
-  +lastSeenLocation: String
-}
-
-class Image {
-  +id: Integer
-  +imagePath: String
-  +timestamp: Date
-  +location: String
-}
-
-class CityCamera {
-  +cameraID: Integer
-  +location: String
-  +status: String
-}
-
-class TrackingLog {
-  +logID: Integer
-  +suspectID: Integer
-  +cameraID: Integer
-  +timestamp: Date
-  +status: String
-}
-
-class AIModel {
-  +modelID: Integer
-  +modelName: String
-  +version: String
-  +accuracy: Float
-}
-
-' Relationships
-Police "1" -- "0..*" TrackingLog : "records"
-Suspect "1" -- "0..*" TrackingLog : "tracked through"
-CityCamera "1" -- "0..*" TrackingLog : "records activity"
-TrackingLog "0..*" -- "1" AIModel : "processed by"
 
 @enduml
-
