@@ -1,31 +1,27 @@
 @startuml
-actor PoliceOfficer
-actor SystemAdmin
-actor Suspect
-actor Camera
+left to right direction
 
-usecase "Detect Suspicious Activity" as UC1
-usecase "Track Individuals" as UC2
-usecase "Upload Image for Search" as UC3
-usecase "Monitor Suspicious Individuals" as UC4
-usecase "Alert Authorities" as UC5
-usecase "View Real-time Video Feed" as UC6
-usecase "Manage System Settings" as UC7
+actor "Police Officer" as Police
+actor "System Admin" as Admin
 
-PoliceOfficer --> UC1
-PoliceOfficer --> UC2
-PoliceOfficer --> UC3
-PoliceOfficer --> UC4
-PoliceOfficer --> UC5
+usecase "Detect Suspicious Activity" as U1
+usecase "Track Specific Individuals" as U2
+usecase "Upload Image for Search" as U3
+usecase "View Alerts and Reports" as U4
+usecase "Configure System Settings" as U5
 
-SystemAdmin --> UC7
-SystemAdmin --> UC6
+rectangle "Criminal Detection System" {
+    U1 -right-> U2
+    U2 <-down-> U3
+    U3 -> U4
+    U5 -[hidden]-> U1
+}
 
-Camera --> UC1
-Camera --> UC2
-Camera --> UC4
+Police --> U1
+Police --> U2
+Police --> U3
+Police --> U4
 
-UC1 .down.> UC2 : <<include>>
-UC3 .down.> UC4 : <<include>>
+Admin --> U5
 
 @enduml
